@@ -1,6 +1,8 @@
-import { configureStore, createSlice, PayloadAction, combineReducers } from '@reduxjs/toolkit';
+import { configureStore, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { v4 as uuid } from 'uuid';
 import { todosInitialState as initialState } from './dev-data';
+import logger from 'redux-logger';
+
 const todosSlice = createSlice({
 	name: 'todos',
 	initialState,
@@ -65,4 +67,4 @@ const reducer = {
 	counter: counterSlice.reducer,
 };
 
-export default configureStore({ reducer });
+export default configureStore({ reducer, middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger) });
