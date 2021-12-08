@@ -1,7 +1,8 @@
 import './App.css';
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { createTodoActionCreator, editTodoActionCreator, toggleTodoActionCreator, deleteTodoActionCreator, selectTodoActionCreator } from '../redux-original';
+// import { createTodoActionCreator, editTodoActionCreator, toggleTodoActionCreator, deleteTodoActionCreator, selectTodoActionCreator } from '../redux-original';
+import { createTodoActionCreator, editTodoActionCreator, toggleTodoActionCreator, deleteTodoActionCreator, selectTodoActionCreator } from '../redux-rtk';
 import { State } from '../type';
 
 const App = function () {
