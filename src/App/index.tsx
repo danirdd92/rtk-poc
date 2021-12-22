@@ -1,20 +1,21 @@
 import './App.css';
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-// import { createTodoActionCreator, editTodoActionCreator, toggleTodoActionCreator, deleteTodoActionCreator, selectTodoActionCreator } from '../redux-original';
-import { createTodoActionCreator, editTodoActionCreator, toggleTodoActionCreator, deleteTodoActionCreator, selectTodoActionCreator } from '../redux-rtk';
-import { State } from '../type';
+import { useTodosStore } from '../mobx-store';
+import { observer } from 'mobx-react-lite';
 
-const App = function () {
-	const dispatch = useDispatch();
+const App = observer(function () {
+	// const dispatch = useDispatch();
+	const todosStore = useTodosStore();
 
-	const todos = useSelector((state: State) => state.todos);
-	const selectedTodoId = useSelector((state: State) => state.selectedTodo);
-	const editedCount = useSelector((state: State) => state.counter);
+	const todos = todosStore.todos;
+	const selectedTodoId = todosStore.selectedTodoId;
+	console.log(selectedTodoId);
+	// const editedCount = useSelector((state: State) => state.counter);
 
 	const [newTodoInput, setNewTodoInput] = useState<string>('');
 	const [editTodoInput, setEditTodoInput] = useState<string>('');
 	const [isEditMode, setIsEditMode] = useState<boolean>(false);
+
 	const editInput = useRef<HTMLInputElement>(null);
 
 	const selectedTodo = (selectedTodoId && todos.find((todo) => todo.id === selectedTodoId)) || null;
@@ -31,12 +32,14 @@ const App = function () {
 		e.preventDefault();
 		if (!newTodoInput.length) return;
 
-		dispatch(createTodoActionCreator({ desc: newTodoInput }));
+		// dispatch(createTodoActionCreator({ desc: newTodoInput }));
+		todosStore.addTodo(newTodoInput);
 		setNewTodoInput('');
 	};
 
 	const handleSelectTodo = (todoId: string) => (): void => {
-		dispatch(selectTodoActionCreator({ id: todoId }));
+		// dispatch(selectTodoActionCreator({ id: todoId }));
+		todosStore.selectTodo(todoId);
 	};
 
 	const handleEdit = (): void => {
@@ -60,7 +63,8 @@ const App = function () {
 			return;
 		}
 
-		dispatch(editTodoActionCreator({ id: selectedTodoId, desc: editTodoInput }));
+		// dispatch(editTodoActionCreator({ id: selectedTodoId, desc: editTodoInput }))
+		todosStore.editTodo(selectedTodoId, editTodoInput);
 		setIsEditMode(false);
 		setEditTodoInput('');
 	};
@@ -74,19 +78,20 @@ const App = function () {
 	const handleToggle = (): void => {
 		if (!selectedTodoId || !selectedTodo) return;
 
-		dispatch(toggleTodoActionCreator({ id: selectedTodoId, isComplete: !selectedTodo.isComplete }));
+		// dispatch(toggleTodoActionCreator({ id: selectedTodoId, isComplete: !selectedTodo.isComplete }));
+		todosStore.toggleTodo(selectedTodoId);
 	};
 
 	const handleDelete = (): void => {
 		if (!selectedTodoId) return;
-		dispatch(deleteTodoActionCreator({ id: selectedTodoId }));
+		// dispatch(deleteTodoActionCreator({ id: selectedTodoId }));
+		todosStore.removeTodo(selectedTodoId);
 	};
 
 	return (
 		<div className='App'>
-			<div className='App__counter'>Todos Updated Count: {editedCount}</div>
 			<div className='App__header'>
-				<h1>Todo: Redux vs RTK Edition</h1>
+				<h1>Redux vs RTK vs MobX </h1>
 				<form onSubmit={handleCreateNewTodo}>
 					<label htmlFor='new-todo'>Add new:</label>
 					<input onChange={handleNewInputChange} id='new-todo' value={newTodoInput} />
@@ -130,6 +135,6 @@ const App = function () {
 			</div>
 		</div>
 	);
-};
+});
 
 export default App;
